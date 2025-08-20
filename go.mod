@@ -1,3 +1,3 @@
-module github.com/janstuemmel/cs2-log
+module github.com/noueii/cs2-log
 
-go 1.19
+go 1.23
