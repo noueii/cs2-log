@@ -195,6 +195,13 @@ type (
 		Victim   Player `json:"victim"`
 	}
 
+	// PlayerFlashAssist is received when a player flash-assisted killing another
+	PlayerFlashAssist struct {
+		Meta
+		Attacker Player `json:"attacker"`
+		Victim   Player `json:"victim"`
+	}
+
 	// PlayerAttack is recieved when a player attacks another
 	PlayerAttack struct {
 		Meta
@@ -373,8 +380,10 @@ const (
 	PlayerKillPattern = `"(.+)<(\d+)><([\[\]\w:_]+)><(TERRORIST|CT)>" \[(-?\d+) (-?\d+) (-?\d+)\] killed "(.+)<(\d+)><([\[\]\w:_]+)><(TERRORIST|CT)>" \[(-?\d+) (-?\d+) (-?\d+)\] with "(\w+)" ?(\(?(headshot|penetrated|headshot penetrated)?\))?`
 	// PlayerKillAssistPattern regular expression
 	PlayerKillAssistPattern = `"(.+)<(\d+)><([\[\]\w:_]+)><(TERRORIST|CT)>" assisted killing "(.+)<(\d+)><([\[\]\w:_]+)><(TERRORIST|CT)>"`
-	// PlayerAttackPattern regular expression
-	PlayerAttackPattern = `"(.+)<(\d+)><([\[\]\w:_]+)><(TERRORIST|CT)>" \[(-?\d+) (-?\d+) (-?\d+)\] attacked "(.+)<(\d+)><([\[\]\w:_]+)><(TERRORIST|CT)>" \[(-?\d+) (-?\d+) (-?\d+)\] with "(\w+)" \(damage "(\d+)"\) \(damage_armor "(\d+)"\) \(health "(\d+)"\) \(armor "(\d+)"\) \(hitgroup "([\w ]+)"\)`
+	// PlayerFlashAssistPattern regular expression
+	PlayerFlashAssistPattern = `"(.+)<(\d+)><([\[\]\w:_]+)><(TERRORIST|CT)>" flash-assisted killing "(.+)<(\d+)><([\[\]\w:_]+)><(TERRORIST|CT)>"`
+	// PlayerAttackPattern regular expression - handles corrupted SteamIDs
+	PlayerAttackPattern = `"(.+)<(\d+)><([^>]*)><(TERRORIST|CT)>" \[(-?\d+) (-?\d+) (-?\d+)\] attacked "(.+)<(\d+)><([^>]*)><(TERRORIST|CT)>" \[(-?\d+) (-?\d+) (-?\d+)\] with "(\w+)" \(damage "(\d+)"\) \(damage_armor "(\d+)"\) \(health "(\d+)"\) \(armor "(\d+)"\) \(hitgroup "([\w ]+)"\)`
 	// PlayerKilledBombPattern regular expression
 	PlayerKilledBombPattern = `"(.+)<(\d+)><([\[\]\w:_]+)><(TERRORIST|CT)>" \[(-?\d+) (-?\d+) (-?\d+)\] was killed by the bomb\.`
 	// PlayerKilledSuicidePattern regular expression
@@ -424,6 +433,7 @@ var DefaultPatterns = map[*regexp.Regexp]MessageFunc{
 	regexp.MustCompile(PlayerPurchasePattern):        NewPlayerPurchase,
 	regexp.MustCompile(PlayerKillPattern):            NewPlayerKill,
 	regexp.MustCompile(PlayerKillAssistPattern):      NewPlayerKillAssist,
+	regexp.MustCompile(PlayerFlashAssistPattern):     NewPlayerFlashAssist,
 	regexp.MustCompile(PlayerAttackPattern):          NewPlayerAttack,
 	regexp.MustCompile(PlayerKilledBombPattern):      NewPlayerKilledBomb,
 	regexp.MustCompile(PlayerKilledSuicidePattern):   NewPlayerKilledSuicide,
@@ -678,6 +688,24 @@ func NewPlayerKill(ti time.Time, r []string) Message {
 func NewPlayerKillAssist(ti time.Time, r []string) Message {
 	return PlayerKillAssist{
 		Meta: NewMeta(ti, "PlayerKillAssist"),
+		Attacker: Player{
+			Name:    r[1],
+			ID:      toInt(r[2]),
+			SteamID: r[3],
+			Side:    r[4],
+		},
+		Victim: Player{
+			Name:    r[5],
+			ID:      toInt(r[6]),
+			SteamID: r[7],
+			Side:    r[8],
+		},
+	}
+}
+
+func NewPlayerFlashAssist(ti time.Time, r []string) Message {
+	return PlayerFlashAssist{
+		Meta: NewMeta(ti, "PlayerFlashAssist"),
 		Attacker: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
