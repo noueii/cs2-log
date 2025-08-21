@@ -689,8 +689,39 @@ Defines the field names for round statistics data.
 "fields" : "             accountid,   team,  money,  kills, deaths,assists,    dmg,    hsp,    kdr,    adr,    mvp,     ef,     ud,     3k,     4k,     5k,clutchk, firstk,pistolk,sniperk, blindk,  bombk,firedmg,uniquek,  dinks,chickenk"
 ```
 
+#### RoundStatsJSON (Multi-line JSON)
+Complete round statistics delivered as a multi-line JSON structure. CS2 outputs these as separate log lines that need to be assembled.
+
+**Individual Line Events:**
+- `json_stats_begin` - Marks start of JSON block (`JSON_BEGIN{`)
+- `json_stats_end` - Marks end of JSON block (`}}JSON_END`)
+- `round_stats_name` - Identifies as round_stats
+- `round_stats_metadata` - Individual metadata fields (map, server, scores)
+- `round_stats_fields` - Field definitions
+- `round_stats_player` - Individual player stats
+
+**Complete Structure Example:**
+```
+JSON_BEGIN{
+"name": "round_stats",
+"round_number" : "36",
+"score_t" : "18", 
+"score_ct" : "17",
+"map" : "de_dust2",
+"server" : "DraculaN | team_SHESKY vs team_xHaPPy_",
+"fields" : "accountid,team,money,kills,deaths,assists...",
+"players" : {
+"player_0" : "0,0,10000,0,0,0,0,0.00,0.00...",
+"player_1" : "0,0,10000,0,0,0,0,0.00,0.00...",
+...
+"player_8" : "869707820,3,4750,14,21,3,1874,28.57..."
+}}JSON_END
+```
+
+**Note:** The backend should assemble these lines into a complete `RoundStatsJSON` event for processing.
+
 #### RoundStatsPlayer
-Individual player statistics for a round.
+Individual player statistics for a round (when parsed as a single line).
 ```json
 {
   "player_id": "player_5",
