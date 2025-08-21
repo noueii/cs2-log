@@ -53,6 +53,17 @@ const (
 	RoundStatsFieldsPattern = `"fields"\s*:\s*"([^"]+)"`
 	RoundStatsPlayerPattern = `"(player_\d+)"\s*:\s*"([^"]+)"`
 	
+	// JSON Round Stats markers
+	JSONBeginPattern = `JSON_BEGIN\{`
+	JSONEndPattern = `\}\}JSON_END`
+	RoundStatsNamePattern = `"name"\s*:\s*"round_stats"`
+	RoundStatsRoundPattern = `"round_number"\s*:\s*"(\d+)"`
+	RoundStatsScoreTPattern = `"score_t"\s*:\s*"(\d+)"`
+	RoundStatsScoreCTPattern = `"score_ct"\s*:\s*"(\d+)"`
+	RoundStatsMapPattern = `"map"\s*:\s*"([^"]+)"`
+	RoundStatsServerPattern = `"server"\s*:\s*"([^"]+)"`
+	RoundStatsPlayersStartPattern = `"players"\s*:\s*\{`
+	
 	// Game Over with details
 	GameOverDetailedPattern = `Game Over: (\w+) (.+?) score (\d+):(\d+) after (\d+) min`
 	
@@ -292,6 +303,38 @@ func NewStatsJSON(ti time.Time, statsType string, data string) Message {
 		Meta: NewMeta(ti, "StatsJSON"),
 		Type: statsType,
 		Data: data,
+	}
+}
+
+func NewJSONBegin(ti time.Time, r []string) Message {
+	return StatsJSON{
+		Meta: NewMeta(ti, "StatsJSON"),
+		Type: "begin",
+		Data: "JSON_BEGIN{",
+	}
+}
+
+func NewJSONEnd(ti time.Time, r []string) Message {
+	return StatsJSON{
+		Meta: NewMeta(ti, "StatsJSON"),
+		Type: "end",
+		Data: "}}JSON_END",
+	}
+}
+
+func NewRoundStatsName(ti time.Time, r []string) Message {
+	return StatsJSON{
+		Meta: NewMeta(ti, "StatsJSON"),
+		Type: "round_stats_name",
+		Data: "round_stats",
+	}
+}
+
+func NewRoundStatsMetadata(ti time.Time, r []string) Message {
+	return StatsJSON{
+		Meta: NewMeta(ti, "StatsJSON"),
+		Type: "round_stats_metadata",
+		Data: r[0],
 	}
 }
 

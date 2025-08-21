@@ -81,7 +81,18 @@ func GetOrderedPatterns() []OrderedPattern {
 		{regexp.MustCompile(StatsJSONStartPattern), NewStatsJSONStart},
 		{regexp.MustCompile(StatsJSONEndPattern), NewStatsJSONEnd},
 		
-		// Round Statistics
+		// JSON Round Stats markers (before individual field patterns)
+		{regexp.MustCompile(JSONBeginPattern), NewJSONBegin},
+		{regexp.MustCompile(JSONEndPattern), NewJSONEnd},
+		{regexp.MustCompile(RoundStatsNamePattern), NewRoundStatsName},
+		{regexp.MustCompile(RoundStatsRoundPattern), NewRoundStatsMetadata},
+		{regexp.MustCompile(RoundStatsScoreTPattern), NewRoundStatsMetadata},
+		{regexp.MustCompile(RoundStatsScoreCTPattern), NewRoundStatsMetadata},
+		{regexp.MustCompile(RoundStatsMapPattern), NewRoundStatsMetadata},
+		{regexp.MustCompile(RoundStatsServerPattern), NewRoundStatsMetadata},
+		{regexp.MustCompile(RoundStatsPlayersStartPattern), NewRoundStatsMetadata},
+		
+		// Round Statistics individual lines
 		{regexp.MustCompile(RoundStatsFieldsPattern), NewRoundStatsFields},
 		{regexp.MustCompile(RoundStatsPlayerPattern), NewRoundStatsPlayer},
 		

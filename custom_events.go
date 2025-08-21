@@ -136,6 +136,49 @@ type RoundStatsFields struct {
 	Fields []string `json:"fields"` // Field names in order
 }
 
+// RoundStatsJSON represents complete round statistics in JSON format
+type RoundStatsJSON struct {
+	Meta
+	Name        string                       `json:"name"`         // "round_stats"
+	RoundNumber int                          `json:"round_number"`
+	ScoreT      int                          `json:"score_t"`
+	ScoreCT     int                          `json:"score_ct"`
+	Map         string                       `json:"map"`
+	Server      string                       `json:"server"`
+	Fields      []string                     `json:"fields"`       // Field names
+	Players     map[string]RoundStatsPlayerData `json:"players"`      // player_0, player_1, etc.
+}
+
+// RoundStatsPlayerData represents player data within RoundStatsJSON
+type RoundStatsPlayerData struct {
+	AccountID    int     `json:"accountid"`
+	Team         int     `json:"team"`           // 1=T, 2=CT
+	Money        int     `json:"money"`
+	Kills        int     `json:"kills"`
+	Deaths       int     `json:"deaths"`
+	Assists      int     `json:"assists"`
+	Damage       int     `json:"damage"`
+	HeadshotPct  float64 `json:"headshot_pct"`   // HSP percentage
+	KDR          float64 `json:"kdr"`            // Kill/Death ratio
+	ADR          int     `json:"adr"`            // Average Damage per Round
+	MVP          int     `json:"mvp"`
+	EnemiesFlashed int  `json:"enemies_flashed"` // EF
+	UtilityDamage int   `json:"utility_damage"`  // UD
+	TripleKills  int    `json:"triple_kills"`    // 3K
+	QuadKills    int    `json:"quad_kills"`      // 4K
+	AceKills     int    `json:"ace_kills"`       // 5K
+	ClutchKills  int    `json:"clutch_kills"`    // clutchk
+	FirstKills   int    `json:"first_kills"`     // firstk
+	PistolKills  int    `json:"pistol_kills"`    // pistolk
+	SniperKills  int    `json:"sniper_kills"`    // sniperk
+	BlindKills   int    `json:"blind_kills"`     // blindk
+	BombKills    int    `json:"bomb_kills"`      // bombk
+	FireDamage   int    `json:"fire_damage"`     // firedmg
+	UniqueKills  int    `json:"unique_kills"`    // uniquek
+	Dinks        int    `json:"dinks"`           // Headshot dinks
+	ChickenKills int    `json:"chicken_kills"`   // chickenk
+}
+
 // RoundStatsPlayer represents a single player's round statistics
 type RoundStatsPlayer struct {
 	Meta
