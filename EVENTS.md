@@ -671,34 +671,60 @@ Player receives an accolade (award) at the end of a round.
 }
 ```
 
-#### RoundStats
-Comprehensive round statistics (JSON format).
+#### RoundStatsFields
+Defines the field names for round statistics data.
 ```json
 {
-  "name": "round_stats",
-  "round": 15,
-  "map": "de_dust2",
-  "players": {
-    "player_0": {
-      "accountid": 123456789,
-      "team": 1,
-      "money": 10000,
-      "kills": 2,
-      "deaths": 1,
-      "assists": 0,
-      "damage": 186,
-      "headshot_percentage": 50.0,
-      "kill_death_ratio": 2.0,
-      "average_damage_per_round": 93,
-      "mvp": 1,
-      "enemies_flashed": 2,
-      "utility_damage": 45,
-      "triple_kills": 0,
-      "quad_kills": 0,
-      "ace": 0
-    }
-  }
+  "fields": [
+    "accountid", "team", "money", "kills", "deaths", "assists", 
+    "dmg", "hsp", "kdr", "adr", "mvp", "ef", "ud", 
+    "3k", "4k", "5k", "clutchk", "firstk", "pistolk", 
+    "sniperk", "blindk", "bombk", "firedmg", "uniquek", 
+    "dinks", "chickenk"
+  ]
 }
+```
+**Raw Log Format:**
+```
+"fields" : "             accountid,   team,  money,  kills, deaths,assists,    dmg,    hsp,    kdr,    adr,    mvp,     ef,     ud,     3k,     4k,     5k,clutchk, firstk,pistolk,sniperk, blindk,  bombk,firedmg,uniquek,  dinks,chickenk"
+```
+
+#### RoundStatsPlayer
+Individual player statistics for a round.
+```json
+{
+  "player_id": "player_5",
+  "accountid": 56591298,
+  "team": 2,                  // 1=T, 2=CT
+  "money": 16000,
+  "kills": 8,
+  "deaths": 4,
+  "assists": 2,
+  "damage": 486,
+  "headshot_pct": 50.0,       // HSP - Headshot percentage
+  "kdr": 2.0,                  // Kill/Death ratio
+  "adr": 121,                  // Average Damage per Round
+  "mvp": 3,                    // MVP count
+  "enemies_flashed": 4,        // EF - Enemies flashed
+  "utility_damage": 120,       // UD - Utility damage
+  "triple_kills": 1,           // 3K
+  "quad_kills": 0,             // 4K
+  "ace_kills": 0,              // 5K
+  "clutch_kills": 2,           // clutchk
+  "first_kills": 3,            // firstk
+  "pistol_kills": 2,           // pistolk
+  "sniper_kills": 1,           // sniperk
+  "blind_kills": 0,            // blindk
+  "bomb_kills": 0,             // bombk
+  "fire_damage": 45,           // firedmg
+  "unique_kills": 5,           // uniquek
+  "dinks": 6,                  // Headshot dinks
+  "chicken_kills": 0           // chickenk
+}
+```
+**Raw Log Format:**
+```
+"player_5" : "            56591298,      2,  16000,      8,      4,      2,    486,  50.00,   2.00,    121,      3,      4,    120,      1,      0,      0,      2,      3,      2,      1,      0,      0,     45,      5,      6,      0"
 ```
 
 #### ChatCommand

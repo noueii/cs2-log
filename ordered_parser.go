@@ -81,6 +81,10 @@ func GetOrderedPatterns() []OrderedPattern {
 		{regexp.MustCompile(StatsJSONStartPattern), NewStatsJSONStart},
 		{regexp.MustCompile(StatsJSONEndPattern), NewStatsJSONEnd},
 		
+		// Round Statistics
+		{regexp.MustCompile(RoundStatsFieldsPattern), NewRoundStatsFields},
+		{regexp.MustCompile(RoundStatsPlayerPattern), NewRoundStatsPlayer},
+		
 		// TriggeredEvent MUST be last as it's very general
 		{regexp.MustCompile(TriggeredEventPattern), NewTriggeredEvent},
 	}

@@ -78,7 +78,8 @@
 | Event | Description | Key Fields |
 |-------|-------------|------------|
 | `PlayerAccolade` | Player award | player, accolade, value |
-| `RoundStats` | Round statistics | round, map, players |
+| `RoundStatsFields` | Stats field definitions | fields (26 stat names) |
+| `RoundStatsPlayer` | Player round stats | player_id, kills, deaths, damage, kdr, etc. |
 | `MatchStatus` | Match status | score, map, rounds_played |
 
 ## Event Patterns (Regex)

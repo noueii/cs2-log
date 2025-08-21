@@ -49,6 +49,10 @@ const (
 	// Extended Chat Events (commands)
 	ChatCommandPattern = `"(.+?)<(\d+)><(.+?)><(.*?)>" say(?:_team)? "\.(\w+)\s*(.*)"`
 	
+	// Round Statistics Events
+	RoundStatsFieldsPattern = `"fields"\s*:\s*"([^"]+)"`
+	RoundStatsPlayerPattern = `"(player_\d+)"\s*:\s*"([^"]+)"`
+	
 	// Game Over with details
 	GameOverDetailedPattern = `Game Over: (\w+) (.+?) score (\d+):(\d+) after (\d+) min`
 	
@@ -291,6 +295,70 @@ func NewStatsJSON(ti time.Time, statsType string, data string) Message {
 	}
 }
 
+func NewRoundStatsFields(ti time.Time, r []string) Message {
+	// Split the fields by comma and trim whitespace
+	fieldsStr := r[1]
+	fields := strings.Split(fieldsStr, ",")
+	for i := range fields {
+		fields[i] = strings.TrimSpace(fields[i])
+	}
+	
+	return RoundStatsFields{
+		Meta:   NewMeta(ti, "RoundStatsFields"),
+		Fields: fields,
+	}
+}
+
+func NewRoundStatsPlayer(ti time.Time, r []string) Message {
+	playerID := r[1]
+	statsStr := r[2]
+	
+	// Split the stats by comma and trim whitespace
+	stats := strings.Split(statsStr, ",")
+	for i := range stats {
+		stats[i] = strings.TrimSpace(stats[i])
+	}
+	
+	// Parse all the statistics
+	player := RoundStatsPlayer{
+		Meta:     NewMeta(ti, "RoundStatsPlayer"),
+		PlayerID: playerID,
+	}
+	
+	// Parse each field based on position
+	// Expected order: accountid, team, money, kills, deaths, assists, dmg, hsp, kdr, adr, mvp, ef, ud, 3k, 4k, 5k, clutchk, firstk, pistolk, sniperk, blindk, bombk, firedmg, uniquek, dinks, chickenk
+	if len(stats) >= 26 {
+		player.AccountID, _ = strconv.Atoi(stats[0])
+		player.Team, _ = strconv.Atoi(stats[1])
+		player.Money, _ = strconv.Atoi(stats[2])
+		player.Kills, _ = strconv.Atoi(stats[3])
+		player.Deaths, _ = strconv.Atoi(stats[4])
+		player.Assists, _ = strconv.Atoi(stats[5])
+		player.Damage, _ = strconv.Atoi(stats[6])
+		player.HeadshotPct, _ = strconv.ParseFloat(stats[7], 64)
+		player.KDR, _ = strconv.ParseFloat(stats[8], 64)
+		player.ADR, _ = strconv.Atoi(stats[9])
+		player.MVP, _ = strconv.Atoi(stats[10])
+		player.EnemiesFlashed, _ = strconv.Atoi(stats[11])
+		player.UtilityDamage, _ = strconv.Atoi(stats[12])
+		player.TripleKills, _ = strconv.Atoi(stats[13])
+		player.QuadKills, _ = strconv.Atoi(stats[14])
+		player.AceKills, _ = strconv.Atoi(stats[15])
+		player.ClutchKills, _ = strconv.Atoi(stats[16])
+		player.FirstKills, _ = strconv.Atoi(stats[17])
+		player.PistolKills, _ = strconv.Atoi(stats[18])
+		player.SniperKills, _ = strconv.Atoi(stats[19])
+		player.BlindKills, _ = strconv.Atoi(stats[20])
+		player.BombKills, _ = strconv.Atoi(stats[21])
+		player.FireDamage, _ = strconv.Atoi(stats[22])
+		player.UniqueKills, _ = strconv.Atoi(stats[23])
+		player.Dinks, _ = strconv.Atoi(stats[24])
+		player.ChickenKills, _ = strconv.Atoi(stats[25])
+	}
+	
+	return player
+}
+
 func NewStatsJSONStart(ti time.Time, r []string) Message {
 	return NewStatsJSON(ti, "start", r[0])
 }
@@ -348,6 +416,10 @@ var ExtendedPatterns = map[*regexp.Regexp]MessageFunc{
 	// Log File
 	regexp.MustCompile(LogFileStartedPattern): NewLogFileStarted,
 	regexp.MustCompile(LogFileClosedPattern):  NewLogFileClosed,
+	
+	// Round Statistics
+	regexp.MustCompile(RoundStatsFieldsPattern): NewRoundStatsFields,
+	regexp.MustCompile(RoundStatsPlayerPattern): NewRoundStatsPlayer,
 	
 	// Chat Commands
 	regexp.MustCompile(ChatCommandPattern): NewChatCommand,
