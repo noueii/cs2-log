@@ -78,8 +78,6 @@ func GetOrderedPatterns() []OrderedPattern {
 		{regexp.MustCompile(BombDefusedTriggerPattern), NewBombBeginPlant},
 		{regexp.MustCompile(FreezePeriodStartPattern), NewFreezePeriodStart},
 		{regexp.MustCompile(FreezePeriodEndPattern), NewFreezePeriodEnd},
-		{regexp.MustCompile(StatsJSONStartPattern), NewStatsJSONStart},
-		{regexp.MustCompile(StatsJSONEndPattern), NewStatsJSONEnd},
 		
 		// JSON Round Stats markers (before individual field patterns)
 		{regexp.MustCompile(JSONBeginPattern), NewJSONBegin},
