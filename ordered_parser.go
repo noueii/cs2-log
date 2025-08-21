@@ -38,6 +38,7 @@ func GetOrderedPatterns() []OrderedPattern {
 		{regexp.MustCompile(PlayerPurchasePattern), NewPlayerPurchase},
 		{regexp.MustCompile(PlayerKillPattern), NewPlayerKill},
 		{regexp.MustCompile(PlayerKillAssistPattern), NewPlayerKillAssist},
+		{regexp.MustCompile(PlayerFlashAssistPattern), NewPlayerFlashAssist},
 		{regexp.MustCompile(PlayerAttackPattern), NewPlayerAttack},
 		{regexp.MustCompile(PlayerKilledBombPattern), NewPlayerKilledBomb},
 		{regexp.MustCompile(PlayerKilledSuicidePattern), NewPlayerKilledSuicide},

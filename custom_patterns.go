@@ -15,8 +15,8 @@ const (
 	// Validation Events
 	PlayerValidatedPattern = `"(.+?)<(\d+)><(.+?)><>" STEAM USERID validated`
 	
-	// Achievement/Award Events
-	PlayerAccoladePattern = `ACCOLADE, (FINAL|ROUND): \{(.+?)\}, (.+?)<(\d+)>, VALUE: (.+)`
+	// Achievement/Award Events - handle tabs or commas as delimiters
+	PlayerAccoladePattern = `ACCOLADE, (FINAL|ROUND): \{(.+?)\}[,\t]\s*(.+?)<(\d+)>[,\t]\s*VALUE: ([^,\t]+)`
 	
 	// Match Status Events
 	MatchStatusScorePattern = `MatchStatus: Score: (\d+):(\d+) on map "(.+?)" RoundsPlayed: (\d+)`

@@ -406,8 +406,8 @@ const (
 	PlayerBombDefusedPattern = `"(.+)<(\d+)><([\[\]\w:_]+)><(TERRORIST|CT)>" triggered "Defused_The_Bomb"`
 	// PlayerThrewPattern regular expression
 	PlayerThrewPattern = `"(.+)<(\d+)><([\[\]\w:_]+)><(TERRORIST|CT)>" threw (\w+) \[(-?\d+) (-?\d+) (-?\d+)\]( flashbang entindex (\d+))?\)?`
-	// PlayerBlindedPattern regular expression - handles any characters in SteamID field
-	PlayerBlindedPattern = `"(.+)<(\d+)><([^>]*)><(TERRORIST|CT)>" blinded for ([\d.]+) by "(.+)<(\d+)><([^>]*)><(TERRORIST|CT)>" from flashbang entindex (\d+)`
+	// PlayerBlindedPattern regular expression - handles any characters in SteamID field and any team
+	PlayerBlindedPattern = `"(.+)<(\d+)><([^>]*)><([^>]*)>" blinded for ([\d.]+) by "(.+)<(\d+)><([^>]*)><([^>]*)>" from flashbang entindex (\d+)`
 	// ProjectileSpawnedPattern regular expression
 	ProjectileSpawnedPattern = `Molotov projectile spawned at (-?\d+\.\d+) (-?\d+\.\d+) (-?\d+\.\d+), velocity (-?\d+\.\d+) (-?\d+\.\d+) (-?\d+\.\d+)`
 	// GameOverPattern regular expression
