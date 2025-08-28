@@ -19,7 +19,7 @@ const (
 	PlayerAccoladePattern = `ACCOLADE, (FINAL|ROUND): \{(.+?)\}[,\t]\s*(.+?)<(\d+)>[,\t]\s*VALUE: ([^,\t]+)`
 	
 	// Match Status Events
-	MatchStatusScorePattern = `MatchStatus: Score: (\d+):(\d+) on map "(.+?)" RoundsPlayed: (\d+)`
+	MatchStatusScorePattern = `MatchStatus: Score: (\d+):(\d+) on map "(.+?)" RoundsPlayed: (-?\d+)`
 	TeamPlayingPattern      = `Team playing "(TERRORIST|CT)": (.+)`
 	MatchStatusTeamPattern  = `MatchStatus: Team playing "(TERRORIST|CT)": (.+)`
 	
@@ -83,6 +83,14 @@ const (
 	StatsJSONStartPattern  = `JSON_BEGIN\{`
 	StatsJSONEndPattern    = `\}\}JSON_END`
 	StatsJSONPlayerPattern = `"player_\d+": \{`
+	
+	// NOTE: ServerMap and ServerName patterns were removed because 
+	// "map" and "server" entries are part of JSON statistics blocks,
+	// not standalone events. They should be parsed as StatsJSON.
+	
+	// Warmup Events
+	WarmupStartPattern = `World triggered "Warmup_Start"`
+	WarmupEndPattern = `World triggered "Warmup_End"`
 )
 
 // Constructor functions for custom events
@@ -410,6 +418,21 @@ func NewStatsJSONEnd(ti time.Time, r []string) Message {
 	return NewStatsJSON(ti, "end", r[0])
 }
 
+// NOTE: NewServerMap and NewServerName removed because these events
+// are part of JSON statistics blocks, not standalone events.
+
+func NewWarmupStart(ti time.Time, r []string) Message {
+	return WarmupStart{
+		Meta: NewMeta(ti, "WarmupStart"),
+	}
+}
+
+func NewWarmupEnd(ti time.Time, r []string) Message {
+	return WarmupEnd{
+		Meta: NewMeta(ti, "WarmupEnd"),
+	}
+}
+
 // Helper function to create a Player struct
 func NewPlayer(name, id, steamID, side string) Player {
 	idInt, _ := strconv.Atoi(id)
@@ -485,4 +508,10 @@ var ExtendedPatterns = map[*regexp.Regexp]MessageFunc{
 	// JSON Stats
 	regexp.MustCompile(StatsJSONStartPattern): NewStatsJSONStart,
 	regexp.MustCompile(StatsJSONEndPattern):   NewStatsJSONEnd,
+	
+	// NOTE: ServerMap and ServerName patterns removed - they're part of JSON blocks
+	
+	// Warmup Events
+	regexp.MustCompile(WarmupStartPattern): NewWarmupStart,
+	regexp.MustCompile(WarmupEndPattern):   NewWarmupEnd,
 }

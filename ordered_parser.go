@@ -95,6 +95,12 @@ func GetOrderedPatterns() []OrderedPattern {
 		{regexp.MustCompile(RoundStatsFieldsPattern), NewRoundStatsFields},
 		{regexp.MustCompile(RoundStatsPlayerPattern), NewRoundStatsPlayer},
 		
+		// NOTE: ServerMap and ServerName patterns removed - they're part of JSON blocks
+		
+		// Warmup Events (must come before general TriggeredEvent)
+		{regexp.MustCompile(WarmupStartPattern), NewWarmupStart},
+		{regexp.MustCompile(WarmupEndPattern), NewWarmupEnd},
+		
 		// TriggeredEvent MUST be last as it's very general
 		{regexp.MustCompile(TriggeredEventPattern), NewTriggeredEvent},
 	}
