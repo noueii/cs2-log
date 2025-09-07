@@ -384,3 +384,92 @@ func BenchmarkParseCustomEvent(b *testing.B) {
 		ParseEnhanced(logLine)
 	}
 }
+
+// NOTE: TestServerMap and TestServerName removed because "map" and "server"
+// entries are part of JSON statistics blocks and should be parsed as StatsJSON,
+// not as standalone events.
+
+func TestWarmupStart(t *testing.T) {
+	logLine := `L 08/19/2025 - 15:12:44: World triggered "Warmup_Start"`
+	
+	msg, err := ParseEnhanced(logLine)
+	if err != nil {
+		t.Fatalf("Failed to parse WarmupStart: %v", err)
+	}
+	
+	warmupStart, ok := msg.(WarmupStart)
+	if !ok {
+		t.Fatalf("Expected WarmupStart, got %T", msg)
+	}
+	
+	if warmupStart.GetType() != "WarmupStart" {
+		t.Errorf("Expected type 'WarmupStart', got '%s'", warmupStart.GetType())
+	}
+}
+
+func TestWarmupEnd(t *testing.T) {
+	logLine := `L 08/19/2025 - 15:12:44: World triggered "Warmup_End"`
+	
+	msg, err := ParseEnhanced(logLine)
+	if err != nil {
+		t.Fatalf("Failed to parse WarmupEnd: %v", err)
+	}
+	
+	warmupEnd, ok := msg.(WarmupEnd)
+	if !ok {
+		t.Fatalf("Expected WarmupEnd, got %T", msg)
+	}
+	
+	if warmupEnd.GetType() != "WarmupEnd" {
+		t.Errorf("Expected type 'WarmupEnd', got '%s'", warmupEnd.GetType())
+	}
+}
+
+func TestProblematicLogEntries(t *testing.T) {
+	// Test the specific log entries that were originally failing
+	tests := []struct {
+		name     string
+		logLine  string
+		expected string
+	}{
+		{
+			name:     "Map JSON (part of stats)",
+			logLine:  `L 08/19/2025 - 15:12:44: "map" : "de_dust2"`,
+			expected: "StatsJSON", // This should be parsed as JSON stats, not standalone
+		},
+		{
+			name:     "Server JSON (part of stats)",
+			logLine:  `L 08/19/2025 - 15:12:44: "server" : "DraculaN | team_SHESKY vs team_xHaPPy_"`,
+			expected: "StatsJSON", // This should be parsed as JSON stats, not standalone
+		},
+		{
+			name:     "Warmup start trigger",
+			logLine:  `L 08/19/2025 - 15:12:44: World triggered "Warmup_Start"`,
+			expected: "WarmupStart",
+		},
+		{
+			name:     "Team playing TERRORIST",
+			logLine:  `L 08/19/2025 - 15:12:44: MatchStatus: Team playing "TERRORIST": team_xHaPPy_`,
+			expected: "TeamPlaying",
+		},
+		{
+			name:     "Match status score",
+			logLine:  `L 08/19/2025 - 15:12:44: MatchStatus: Score: 0:0 on map "de_dust2" RoundsPlayed: -1`,
+			expected: "MatchStatus",
+		},
+	}
+	
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			msg, err := ParseEnhanced(tt.logLine)
+			if err != nil {
+				t.Fatalf("Failed to parse %s: %v", tt.expected, err)
+			}
+			
+			if msg.GetType() != tt.expected {
+				t.Errorf("Expected type '%s', got '%s' for line: %s", 
+					tt.expected, msg.GetType(), tt.logLine)
+			}
+		})
+	}
+}

@@ -225,3 +225,16 @@ type FreezePeriod struct {
 	Meta
 	Action string `json:"action"` // "start", "end"
 }
+
+// NOTE: ServerMap and ServerName events removed because "map" and "server" 
+// entries are part of JSON statistics blocks, not standalone events.
+
+// WarmupStart is received when warmup period starts
+type WarmupStart struct {
+	Meta
+}
+
+// WarmupEnd is received when warmup period ends
+type WarmupEnd struct {
+	Meta
+}
