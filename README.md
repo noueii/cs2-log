@@ -90,16 +90,29 @@ Example JSON output:
 
 ### Parsing Functions
 
-The library provides three parsing functions:
+The library provides multiple parsing functions:
 
-#### `Parse(line string) (Message, error)`
+#### Single-Line Parsing
+
+##### `Parse(line string) (Message, error)`
 Standard parsing using default CS2 event patterns. Use this for basic CS2 log parsing.
 
-#### `ParseEnhanced(line string) (Message, error)`
+##### `ParseEnhanced(line string) (Message, error)`
 Enhanced parsing that includes both default patterns and 30+ custom event types. Recommended for comprehensive log analysis.
 
-#### `ParseOrdered(line string) (Message, error)`
+##### `ParseOrdered(line string) (Message, error)`
 Ordered parsing that respects pattern priority (e.g., chat commands before regular chat). Use when pattern matching order matters.
+
+#### Batch Parsing (Recommended)
+
+##### `ParseLines(lines []string) ([]Message, []error)`
+Batch parsing that takes multiple log lines and returns all parsed events. Automatically handles multi-line JSON statistics blocks. This is the recommended approach for parsing log files.
+
+##### `ParseLinesOrdered(lines []string) ([]Message, []error)`
+Batch parsing with ordered pattern matching for priority-sensitive parsing.
+
+##### `ParseLinesEnhanced(lines []string) ([]Message, []error)`
+Batch parsing with enhanced pattern support for all custom event types.
 
 ### Custom Events
 

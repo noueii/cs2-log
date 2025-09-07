@@ -1,18 +1,6 @@
-# Folders
-_obj
-_test
-vendor/
+# Debug folder with sensitive data
+debug/
+
+# IDE files
+.vscode/
 .idea/
-
-# Dependency directories
-/!vendor
-
-# Go specific
-*.d
-*.test
-*.out
-
-# End of file marker
-# If you need to ignore any additional files or directories, add them below this line
-
-coverage.out
