@@ -306,116 +306,49 @@ func NewFreezePeriodEnd(ti time.Time, r []string) Message {
 	}
 }
 
+// NOTE: JSON statistics blocks are now handled by the stateful parser
+// which returns a single comprehensive JSONStatistics event.
+// The following functions are deprecated and replaced by stateful parsing:
+// - NewStatsJSON, NewJSONBegin, NewJSONEnd
+// - NewRoundStatsName, NewRoundStatsMetadata, NewRoundStatsFields
+// - NewRoundStatsPlayer, NewStatsJSONStart, NewStatsJSONEnd
+
+// Placeholder functions to prevent compilation errors
+// These should not be used and will return Unknown messages
 func NewStatsJSON(ti time.Time, statsType string, data string) Message {
-	return StatsJSON{
-		Meta: NewMeta(ti, "StatsJSON"),
-		Type: statsType,
-		Data: data,
-	}
+	return Unknown{Meta: NewMeta(ti, "Unknown"), Raw: data}
 }
 
 func NewJSONBegin(ti time.Time, r []string) Message {
-	return StatsJSON{
-		Meta: NewMeta(ti, "StatsJSON"),
-		Type: "begin",
-		Data: "JSON_BEGIN{",
-	}
+	return Unknown{Meta: NewMeta(ti, "Unknown"), Raw: "JSON_BEGIN{"}
 }
 
 func NewJSONEnd(ti time.Time, r []string) Message {
-	return StatsJSON{
-		Meta: NewMeta(ti, "StatsJSON"),
-		Type: "end",
-		Data: "}}JSON_END",
-	}
+	return Unknown{Meta: NewMeta(ti, "Unknown"), Raw: "}}JSON_END"}
 }
 
 func NewRoundStatsName(ti time.Time, r []string) Message {
-	return StatsJSON{
-		Meta: NewMeta(ti, "StatsJSON"),
-		Type: "round_stats_name",
-		Data: "round_stats",
-	}
+	return Unknown{Meta: NewMeta(ti, "Unknown"), Raw: r[0]}
 }
 
 func NewRoundStatsMetadata(ti time.Time, r []string) Message {
-	return StatsJSON{
-		Meta: NewMeta(ti, "StatsJSON"),
-		Type: "round_stats_metadata",
-		Data: r[0],
-	}
+	return Unknown{Meta: NewMeta(ti, "Unknown"), Raw: r[0]}
 }
 
 func NewRoundStatsFields(ti time.Time, r []string) Message {
-	// Split the fields by comma and trim whitespace
-	fieldsStr := r[1]
-	fields := strings.Split(fieldsStr, ",")
-	for i := range fields {
-		fields[i] = strings.TrimSpace(fields[i])
-	}
-	
-	return RoundStatsFields{
-		Meta:   NewMeta(ti, "RoundStatsFields"),
-		Fields: fields,
-	}
+	return Unknown{Meta: NewMeta(ti, "Unknown"), Raw: r[0]}
 }
 
 func NewRoundStatsPlayer(ti time.Time, r []string) Message {
-	playerID := r[1]
-	statsStr := r[2]
-	
-	// Split the stats by comma and trim whitespace
-	stats := strings.Split(statsStr, ",")
-	for i := range stats {
-		stats[i] = strings.TrimSpace(stats[i])
-	}
-	
-	// Parse all the statistics
-	player := RoundStatsPlayer{
-		Meta:     NewMeta(ti, "RoundStatsPlayer"),
-		PlayerID: playerID,
-	}
-	
-	// Parse each field based on position
-	// Expected order: accountid, team, money, kills, deaths, assists, dmg, hsp, kdr, adr, mvp, ef, ud, 3k, 4k, 5k, clutchk, firstk, pistolk, sniperk, blindk, bombk, firedmg, uniquek, dinks, chickenk
-	if len(stats) >= 26 {
-		player.AccountID, _ = strconv.Atoi(stats[0])
-		player.Team, _ = strconv.Atoi(stats[1])
-		player.Money, _ = strconv.Atoi(stats[2])
-		player.Kills, _ = strconv.Atoi(stats[3])
-		player.Deaths, _ = strconv.Atoi(stats[4])
-		player.Assists, _ = strconv.Atoi(stats[5])
-		player.Damage, _ = strconv.Atoi(stats[6])
-		player.HeadshotPct, _ = strconv.ParseFloat(stats[7], 64)
-		player.KDR, _ = strconv.ParseFloat(stats[8], 64)
-		player.ADR, _ = strconv.Atoi(stats[9])
-		player.MVP, _ = strconv.Atoi(stats[10])
-		player.EnemiesFlashed, _ = strconv.Atoi(stats[11])
-		player.UtilityDamage, _ = strconv.Atoi(stats[12])
-		player.TripleKills, _ = strconv.Atoi(stats[13])
-		player.QuadKills, _ = strconv.Atoi(stats[14])
-		player.AceKills, _ = strconv.Atoi(stats[15])
-		player.ClutchKills, _ = strconv.Atoi(stats[16])
-		player.FirstKills, _ = strconv.Atoi(stats[17])
-		player.PistolKills, _ = strconv.Atoi(stats[18])
-		player.SniperKills, _ = strconv.Atoi(stats[19])
-		player.BlindKills, _ = strconv.Atoi(stats[20])
-		player.BombKills, _ = strconv.Atoi(stats[21])
-		player.FireDamage, _ = strconv.Atoi(stats[22])
-		player.UniqueKills, _ = strconv.Atoi(stats[23])
-		player.Dinks, _ = strconv.Atoi(stats[24])
-		player.ChickenKills, _ = strconv.Atoi(stats[25])
-	}
-	
-	return player
+	return Unknown{Meta: NewMeta(ti, "Unknown"), Raw: r[0]}
 }
 
 func NewStatsJSONStart(ti time.Time, r []string) Message {
-	return NewStatsJSON(ti, "start", r[0])
+	return Unknown{Meta: NewMeta(ti, "Unknown"), Raw: r[0]}
 }
 
 func NewStatsJSONEnd(ti time.Time, r []string) Message {
-	return NewStatsJSON(ti, "end", r[0])
+	return Unknown{Meta: NewMeta(ti, "Unknown"), Raw: r[0]}
 }
 
 // NOTE: NewServerMap and NewServerName removed because these events
