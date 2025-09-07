@@ -1,5 +1,7 @@
 package cs2log
 
+import "time"
+
 // Custom event types for CS2 logs that are not in the original parser
 
 // PlayerLeftBuyzone is received when a player leaves the buy zone
@@ -237,4 +239,58 @@ type WarmupStart struct {
 // WarmupEnd is received when warmup period ends
 type WarmupEnd struct {
 	Meta
+}
+
+// PlayerStatistics represents detailed player statistics
+type PlayerStatistics struct {
+	AccountID      int     `json:"accountid"`
+	Team           int     `json:"team"`            // 1=T, 2=CT, 3=Spectator
+	Money          int     `json:"money"`
+	Kills          int     `json:"kills"`
+	Deaths         int     `json:"deaths"`
+	Assists        int     `json:"assists"`
+	Damage         int     `json:"damage"`
+	HeadshotPct    float64 `json:"headshot_pct"`    // HSP percentage
+	KDR            float64 `json:"kdr"`             // Kill/Death ratio
+	ADR            int     `json:"adr"`             // Average Damage per Round
+	MVP            int     `json:"mvp"`
+	EnemiesFlashed int     `json:"enemies_flashed"` // EF
+	UtilityDamage  int     `json:"utility_damage"`  // UD
+	TripleKills    int     `json:"triple_kills"`    // 3K
+	QuadKills      int     `json:"quad_kills"`      // 4K
+	AceKills       int     `json:"ace_kills"`       // 5K
+	ClutchKills    int     `json:"clutch_kills"`
+	FirstKills     int     `json:"first_kills"`
+	PistolKills    int     `json:"pistol_kills"`
+	SniperKills    int     `json:"sniper_kills"`
+	BlindKills     int     `json:"blind_kills"`
+	BombKills      int     `json:"bomb_kills"`
+	FireDamage     int     `json:"fire_damage"`
+	UniqueKills    int     `json:"unique_kills"`
+	Dinks          int     `json:"dinks"`
+	ChickenKills   int     `json:"chicken_kills"`
+}
+
+// JSONStatistics represents a complete JSON statistics block from the logs
+type JSONStatistics struct {
+	Meta
+	Name        string                      `json:"name"`         // e.g., "round_stats"
+	RoundNumber int                         `json:"round_number"`
+	ScoreT      int                         `json:"score_t"`
+	ScoreCT     int                         `json:"score_ct"`
+	Map         string                      `json:"map"`
+	Server      string                      `json:"server"`
+	Fields      []string                    `json:"fields"`       // List of field names
+	Players     map[string]PlayerStatistics `json:"players"`      // Map of player_id to stats
+	RawJSON     string                      `json:"raw_json"`     // Complete raw JSON for custom processing
+}
+
+// GetType returns the type of the JSONStatistics message
+func (j JSONStatistics) GetType() string {
+	return "JSONStatistics"
+}
+
+// GetTime returns the timestamp of the JSONStatistics message
+func (j JSONStatistics) GetTime() time.Time {
+	return j.Meta.Time
 }
