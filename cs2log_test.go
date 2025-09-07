@@ -15,8 +15,8 @@ func ExampleParse() {
 
 	var msg cs2log.Message
 
-	// a line from a server logfile
-	line := `L 11/05/2018 - 15:44:36: "Player-Name<12><[U:1:29384012]><CT>" purchased "m4a1"`
+	// a line from a server logfile (from debug/good_logs/sv1/combined_logs.log)
+	line := `08/29/2025 - 10:26:49.000: "ragga<6><[U:1:109933575]><TERRORIST>" purchased "item_assaultsuit"`
 
 	// parse Message
 	msg, _ = cs2log.Parse(line)
@@ -25,13 +25,13 @@ func ExampleParse() {
 	fmt.Println(msg.GetTime().String())
 	// Output:
 	// PlayerPurchase
-	// 2018-11-05 15:44:36 +0000 UTC
+	// 2025-08-29 10:26:49 +0000 UTC
 }
 
 func ExampleToJSON() {
 
-	// parse Message
-	msg, _ := cs2log.Parse(`L 11/05/2018 - 15:44:36: "Player-Name<12><[U:1:29384012]><CT>" purchased "m4a1"`)
+	// parse Message (from debug/good_logs/sv1/combined_logs.log)
+	msg, _ := cs2log.Parse(`08/29/2025 - 10:26:49.000: "ragga<6><[U:1:109933575]><TERRORIST>" purchased "ak47"`)
 
 	// cast Message interface type to PlayerPurchase type
 	playerPurchase, _ := msg.(cs2log.PlayerPurchase)
@@ -44,9 +44,9 @@ func ExampleToJSON() {
 
 	fmt.Println(jsn)
 	// Output:
-	// [U:1:29384012]
-	// m4a1
-	// {"time":"2018-11-05T15:44:36Z","type":"PlayerPurchase","player":{"name":"Player-Name","id":12,"steam_id":"[U:1:29384012]","side":"CT"},"item":"m4a1"}
+	// [U:1:109933575]
+	// ak47
+	// {"time":"2025-08-29T10:26:49Z","type":"PlayerPurchase","player":{"name":"ragga","id":6,"steam_id":"[U:1:109933575]","side":"TERRORIST"},"item":"ak47"}
 }
 
 func TestMessages(t *testing.T) {
@@ -999,7 +999,7 @@ func TestParse(t *testing.T) {
 	t.Run("time and type", func(t *testing.T) {
 
 		// given
-		l := `L 11/05/2018 - 15:44:36: "Player-Name<12><[U:1:29384012]><TERRORIST>" purchased "m4a1"`
+		l := `11/05/2018 - 15:44:36.000: "Player-Name<12><[U:1:29384012]><TERRORIST>" purchased "m4a1"`
 
 		// when
 		m, err := cs2log.Parse(l)
@@ -1008,6 +1008,31 @@ func TestParse(t *testing.T) {
 		assert(t, nil, err)
 		assert(t, "PlayerPurchase", m.GetType())
 		assert(t, time.Date(2018, time.November, 5, 15, 44, 36, 0, time.UTC), m.GetTime())
+	})
+
+	t.Run("new format with milliseconds", func(t *testing.T) {
+
+		// given - real line from combined_logs.log
+		l := `08/29/2025 - 10:26:49.000: "ragga<6><[U:1:109933575]><TERRORIST>" purchased "item_assaultsuit"`
+
+		// when
+		m, err := cs2log.Parse(l)
+
+		// then
+		assert(t, nil, err)
+		assert(t, "PlayerPurchase", m.GetType())
+		assert(t, time.Date(2025, time.August, 29, 10, 26, 49, 0, time.UTC), m.GetTime())
+
+		// when
+		pp, ok := m.(cs2log.PlayerPurchase)
+
+		// then
+		assert(t, true, ok)
+		assert(t, "ragga", pp.Player.Name)
+		assert(t, 6, pp.Player.ID)
+		assert(t, "[U:1:109933575]", pp.Player.SteamID)
+		assert(t, "TERRORIST", pp.Player.Side)
+		assert(t, "item_assaultsuit", pp.Item)
 	})
 
 	t.Run("error", func(t *testing.T) {
@@ -1027,19 +1052,19 @@ func TestParse(t *testing.T) {
 
 		// given
 		// day 50 out of range
-		l := `L 11/50/2018 - 15:44:36: "Player-Name<12><[U:1:29384012]><TERRORIST>" purchased "m4a1"`
+		l := `11/50/2018 - 15:44:36.000: "Player-Name<12><[U:1:29384012]><TERRORIST>" purchased "m4a1"`
 
 		// when
 		m, err := cs2log.Parse(l)
 
 		// then
-		assert(t, `parsing time "11/50/2018 - 15:44:36": day out of range`, err.Error())
+		assert(t, `parsing time "11/50/2018 - 15:44:36.000": day out of range`, err.Error())
 		assert(t, nil, m)
 	})
 
 	t.Run("parse with patterns", func(t *testing.T) {
 
-		l := `L 11/05/2018 - 15:44:36: "Player-Name<12><[U:1:29384012]><TERRORIST>" purchased "m4a1"`
+		l := `11/05/2018 - 15:44:36.000: "Player-Name<12><[U:1:29384012]><TERRORIST>" purchased "m4a1"`
 
 		patterns := map[*regexp.Regexp]cs2log.MessageFunc{
 			regexp.MustCompile(cs2log.PlayerPurchasePattern): cs2log.NewPlayerPurchase,
@@ -1078,7 +1103,7 @@ func BenchmarkUnknown(b *testing.B) {
 // helper
 
 func line(line string) string {
-	return fmt.Sprintf("L 11/05/2018 - 15:44:36: %s\n", line)
+	return fmt.Sprintf("11/05/2018 - 15:44:36.000: %s\n", line)
 }
 
 func assert(t *testing.T, want interface{}, have interface{}) {

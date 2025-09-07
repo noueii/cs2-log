@@ -112,8 +112,8 @@ func ParseOrdered(line string) (Message, error) {
 		return nil, ErrorNoMatch
 	}
 	
-	// parse time
-	ti, err := time.Parse("01/02/2006 - 15:04:05", result[1])
+	// parse time with milliseconds
+	ti, err := time.Parse("01/02/2006 - 15:04:05.000", result[1])
 	
 	// if parsing the date failed, return error
 	if err != nil {

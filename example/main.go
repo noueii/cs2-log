@@ -5,22 +5,22 @@ import (
 	"fmt"
 	"os"
 
-	cs2log "github.com/janstuemmel/cs2-log"
+	cs2log "github.com/noueii/cs2-log"
 )
 
 // Usage:
 //
 // From file:
-// go run main.go example.log
+// go run main.go ../debug/good_logs/sv1/combined_logs.log
 //
 // From STDIN:
-// cat example.log | go run main.go
+// cat ../debug/good_logs/sv1/combined_logs.log | go run main.go
 //
 // To File:
-// go run main.go > out.txt
+// go run main.go ../debug/good_logs/sv1/combined_logs.log > out.txt
 //
 // Omit errors:
-// go run main.go 2>/dev/null
+// go run main.go ../debug/good_logs/sv1/combined_logs.log 2>/dev/null
 
 func main() {
 
