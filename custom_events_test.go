@@ -5,7 +5,7 @@ import (
 )
 
 func TestPlayerLeftBuyzone(t *testing.T) {
-	logLine := `L 08/19/2025 - 15:12:44: "Magixx<123><STEAM_1:0:123456><CT>" left buyzone with [ weapon_knife weapon_usp_silencer kevlar(100) weapon_awp ]`
+	logLine := `08/19/2025 - 15:12:44.000: "Magixx<123><STEAM_1:0:123456><CT>" left buyzone with [ weapon_knife weapon_usp_silencer kevlar(100) weapon_awp ]`
 	
 	msg, err := ParseEnhanced(logLine)
 	if err != nil {
@@ -27,7 +27,7 @@ func TestPlayerLeftBuyzone(t *testing.T) {
 }
 
 func TestPlayerValidated(t *testing.T) {
-	logLine := `L 08/19/2025 - 15:12:44: "sh1ro<456><STEAM_1:0:654321><>" STEAM USERID validated`
+	logLine := `08/19/2025 - 15:12:44.000: "sh1ro<456><STEAM_1:0:654321><>" STEAM USERID validated`
 	
 	msg, err := ParseEnhanced(logLine)
 	if err != nil {
@@ -56,7 +56,7 @@ func TestPlayerAccolade(t *testing.T) {
 	}{
 		{
 			name:    "Final 3k",
-			logLine: `L 08/19/2025 - 15:12:44: ACCOLADE, FINAL: {3k}, sh1ro<456>, VALUE: 2.000000`,
+			logLine: `08/19/2025 - 15:12:44.000: ACCOLADE, FINAL: {3k}, sh1ro<456>, VALUE: 2.000000`,
 			expected: struct {
 				Type    string
 				IsFinal bool
@@ -65,7 +65,7 @@ func TestPlayerAccolade(t *testing.T) {
 		},
 		{
 			name:    "Round MVP",
-			logLine: `L 08/19/2025 - 15:12:44: ACCOLADE, ROUND: {mvp}, HooXi<789>, VALUE: 5.000000`,
+			logLine: `08/19/2025 - 15:12:44.000: ACCOLADE, ROUND: {mvp}, HooXi<789>, VALUE: 5.000000`,
 			expected: struct {
 				Type    string
 				IsFinal bool
@@ -102,7 +102,7 @@ func TestPlayerAccolade(t *testing.T) {
 }
 
 func TestMatchStatus(t *testing.T) {
-	logLine := `L 08/19/2025 - 15:12:44: MatchStatus: Score: 17:19 on map "de_dust2" RoundsPlayed: 36`
+	logLine := `08/19/2025 - 15:12:44.000: MatchStatus: Score: 17:19 on map "de_dust2" RoundsPlayed: 36`
 	
 	msg, err := ParseEnhanced(logLine)
 	if err != nil {
@@ -139,17 +139,17 @@ func TestMatchPause(t *testing.T) {
 	}{
 		{
 			name:     "Pause enabled",
-			logLine:  `L 08/19/2025 - 15:12:44: Match pause is enabled`,
+			logLine:  `08/19/2025 - 15:12:44.000: Match pause is enabled`,
 			expected: "enabled",
 		},
 		{
 			name:     "Pause disabled",
-			logLine:  `L 08/19/2025 - 15:12:44: Match pause is disabled`,
+			logLine:  `08/19/2025 - 15:12:44.000: Match pause is disabled`,
 			expected: "disabled",
 		},
 		{
 			name:     "Match unpaused",
-			logLine:  `L 08/19/2025 - 15:12:44: Match unpaused`,
+			logLine:  `08/19/2025 - 15:12:44.000: Match unpaused`,
 			expected: "unpaused",
 		},
 	}
@@ -184,7 +184,7 @@ func TestChatCommand(t *testing.T) {
 	}{
 		{
 			name:    "Pause command",
-			logLine: `L 08/19/2025 - 15:12:44: "Magixx<123><STEAM_1:0:123456><CT>" say ".pause"`,
+			logLine: `08/19/2025 - 15:12:44.000: "Magixx<123><STEAM_1:0:123456><CT>" say ".pause"`,
 			expected: struct {
 				Command string
 				Args    string
@@ -192,7 +192,7 @@ func TestChatCommand(t *testing.T) {
 		},
 		{
 			name:    "Restore with args",
-			logLine: `L 08/19/2025 - 15:12:44: "sh1ro<456><STEAM_1:0:654321><T>" say ".restore 35"`,
+			logLine: `08/19/2025 - 15:12:44.000: "sh1ro<456><STEAM_1:0:654321><T>" say ".restore 35"`,
 			expected: struct {
 				Command string
 				Args    string
@@ -234,7 +234,7 @@ func TestServerCvar(t *testing.T) {
 	}{
 		{
 			name:    "server_cvar format",
-			logLine: `L 08/19/2025 - 15:12:44: server_cvar: "mp_freezetime" "20"`,
+			logLine: `08/19/2025 - 15:12:44.000: server_cvar: "mp_freezetime" "20"`,
 			expected: struct {
 				Name  string
 				Value string
@@ -242,7 +242,7 @@ func TestServerCvar(t *testing.T) {
 		},
 		{
 			name:    "mp_ format",
-			logLine: `L 08/19/2025 - 15:12:44: "mp_maxrounds" = "24"`,
+			logLine: `08/19/2025 - 15:12:44.000: "mp_maxrounds" = "24"`,
 			expected: struct {
 				Name  string
 				Value string
@@ -274,7 +274,7 @@ func TestServerCvar(t *testing.T) {
 }
 
 func TestRconCommand(t *testing.T) {
-	logLine := `L 08/19/2025 - 15:12:44: rcon from "192.168.1.100:12345": command "mp_pause_match 1"`
+	logLine := `08/19/2025 - 15:12:44.000: rcon from "192.168.1.100:12345": command "mp_pause_match 1"`
 	
 	msg, err := ParseEnhanced(logLine)
 	if err != nil {
@@ -296,7 +296,7 @@ func TestRconCommand(t *testing.T) {
 }
 
 func TestGrenadeThrowDebug(t *testing.T) {
-	logLine := `L 08/19/2025 - 15:12:44: "Magixx" sv_throw_molotov -1943.109 1620.291 94.267 -123.456 456.789 789.012`
+	logLine := `08/19/2025 - 15:12:44.000: "Magixx" sv_throw_molotov -1943.109 1620.291 94.267 -123.456 456.789 789.012`
 	
 	msg, err := ParseEnhanced(logLine)
 	if err != nil {
@@ -331,17 +331,17 @@ func TestBackwardCompatibility(t *testing.T) {
 	}{
 		{
 			name:    "Player kill",
-			logLine: `L 08/19/2025 - 15:12:44: "Magixx<123><STEAM_1:0:123456><CT>" [1 2 3] killed "sh1ro<456><STEAM_1:0:654321><TERRORIST>" [4 5 6] with "ak47"`,
+			logLine: `08/19/2025 - 15:12:44.000: "Magixx<123><STEAM_1:0:123456><CT>" [1 2 3] killed "sh1ro<456><STEAM_1:0:654321><TERRORIST>" [4 5 6] with "ak47"`,
 			msgType: "PlayerKill",
 		},
 		{
 			name:    "Round start",
-			logLine: `L 08/19/2025 - 15:12:44: World triggered "Round_Start"`,
+			logLine: `08/19/2025 - 15:12:44.000: World triggered "Round_Start"`,
 			msgType: "WorldRoundStart",
 		},
 		{
 			name:    "Player say",
-			logLine: `L 08/19/2025 - 15:12:44: "Magixx<123><STEAM_1:0:123456><CT>" say "nice shot"`,
+			logLine: `08/19/2025 - 15:12:44.000: "Magixx<123><STEAM_1:0:123456><CT>" say "nice shot"`,
 			msgType: "PlayerSay",
 		},
 	}
@@ -362,7 +362,7 @@ func TestBackwardCompatibility(t *testing.T) {
 
 // Benchmark to compare performance
 func BenchmarkParseOriginal(b *testing.B) {
-	logLine := `L 08/19/2025 - 15:12:44: "Magixx<123><STEAM_1:0:123456><CT>" [1 2 3] killed "sh1ro<456><STEAM_1:0:654321><T>" [4 5 6] with "ak47"`
+	logLine := `08/19/2025 - 15:12:44.000: "Magixx<123><STEAM_1:0:123456><CT>" [1 2 3] killed "sh1ro<456><STEAM_1:0:654321><T>" [4 5 6] with "ak47"`
 	
 	for i := 0; i < b.N; i++ {
 		Parse(logLine)
@@ -370,7 +370,7 @@ func BenchmarkParseOriginal(b *testing.B) {
 }
 
 func BenchmarkParseEnhanced(b *testing.B) {
-	logLine := `L 08/19/2025 - 15:12:44: "Magixx<123><STEAM_1:0:123456><CT>" [1 2 3] killed "sh1ro<456><STEAM_1:0:654321><T>" [4 5 6] with "ak47"`
+	logLine := `08/19/2025 - 15:12:44.000: "Magixx<123><STEAM_1:0:123456><CT>" [1 2 3] killed "sh1ro<456><STEAM_1:0:654321><T>" [4 5 6] with "ak47"`
 	
 	for i := 0; i < b.N; i++ {
 		ParseEnhanced(logLine)
@@ -378,7 +378,7 @@ func BenchmarkParseEnhanced(b *testing.B) {
 }
 
 func BenchmarkParseCustomEvent(b *testing.B) {
-	logLine := `L 08/19/2025 - 15:12:44: "Magixx<123><STEAM_1:0:123456><CT>" left buyzone with [ weapon_knife weapon_usp_silencer kevlar(100) weapon_awp ]`
+	logLine := `08/19/2025 - 15:12:44.000: "Magixx<123><STEAM_1:0:123456><CT>" left buyzone with [ weapon_knife weapon_usp_silencer kevlar(100) weapon_awp ]`
 	
 	for i := 0; i < b.N; i++ {
 		ParseEnhanced(logLine)
@@ -390,7 +390,7 @@ func BenchmarkParseCustomEvent(b *testing.B) {
 // not as standalone events.
 
 func TestWarmupStart(t *testing.T) {
-	logLine := `L 08/19/2025 - 15:12:44: World triggered "Warmup_Start"`
+	logLine := `08/19/2025 - 15:12:44.000: World triggered "Warmup_Start"`
 	
 	msg, err := ParseEnhanced(logLine)
 	if err != nil {
@@ -408,7 +408,7 @@ func TestWarmupStart(t *testing.T) {
 }
 
 func TestWarmupEnd(t *testing.T) {
-	logLine := `L 08/19/2025 - 15:12:44: World triggered "Warmup_End"`
+	logLine := `08/19/2025 - 15:12:44.000: World triggered "Warmup_End"`
 	
 	msg, err := ParseEnhanced(logLine)
 	if err != nil {
@@ -434,27 +434,27 @@ func TestProblematicLogEntries(t *testing.T) {
 	}{
 		{
 			name:     "Map JSON (part of stats)",
-			logLine:  `L 08/19/2025 - 15:12:44: "map" : "de_dust2"`,
+			logLine:  `08/19/2025 - 15:12:44.000: "map" : "de_dust2"`,
 			expected: "StatsJSON", // This should be parsed as JSON stats, not standalone
 		},
 		{
 			name:     "Server JSON (part of stats)",
-			logLine:  `L 08/19/2025 - 15:12:44: "server" : "DraculaN | team_SHESKY vs team_xHaPPy_"`,
+			logLine:  `08/19/2025 - 15:12:44.000: "server" : "DraculaN | team_SHESKY vs team_xHaPPy_"`,
 			expected: "StatsJSON", // This should be parsed as JSON stats, not standalone
 		},
 		{
 			name:     "Warmup start trigger",
-			logLine:  `L 08/19/2025 - 15:12:44: World triggered "Warmup_Start"`,
+			logLine:  `08/19/2025 - 15:12:44.000: World triggered "Warmup_Start"`,
 			expected: "WarmupStart",
 		},
 		{
 			name:     "Team playing TERRORIST",
-			logLine:  `L 08/19/2025 - 15:12:44: MatchStatus: Team playing "TERRORIST": team_xHaPPy_`,
+			logLine:  `08/19/2025 - 15:12:44.000: MatchStatus: Team playing "TERRORIST": team_xHaPPy_`,
 			expected: "TeamPlaying",
 		},
 		{
 			name:     "Match status score",
-			logLine:  `L 08/19/2025 - 15:12:44: MatchStatus: Score: 0:0 on map "de_dust2" RoundsPlayed: -1`,
+			logLine:  `08/19/2025 - 15:12:44.000: MatchStatus: Score: 0:0 on map "de_dust2" RoundsPlayed: -1`,
 			expected: "MatchStatus",
 		},
 	}
